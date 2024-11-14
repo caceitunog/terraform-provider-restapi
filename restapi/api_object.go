@@ -343,6 +343,9 @@ func (obj *APIObject) readObject() error {
 	if len(obj.readData) > 0 {
 		readData, _ := json.Marshal(obj.readData)
 		send = string(readData)
+
+		// Replace "{id}" in the readData string with the actual obj.id
+		send = strings.Replace(send, "{id}", obj.id, -1)
 		if obj.debug {
 			log.Printf("api_object.go: Using read data '%s'", send)
 		}
