@@ -340,15 +340,18 @@ func (obj *APIObject) readObject() error {
 	}
 
 	send := ""
-	if len(obj.readData) > 0 {
+	if len(obj.readData) == 0 && obj.readMethod == "POST" {
+		// Special case for POST requests with empty readData
+		send = "{}"
+	} else if len(obj.readData) > 0 {
 		readData, _ := json.Marshal(obj.readData)
 		send = string(readData)
 
 		// Replace "{id}" in the readData string with the actual obj.id
 		send = strings.Replace(send, "{id}", obj.id, -1)
-		if obj.debug {
-			log.Printf("api_object.go: Using read data '%s'", send)
-		}
+	}
+	if obj.debug {
+		log.Printf("api_object.go: Using read data '%s'", send)
 	}
 
 	resultString, err := obj.apiClient.sendRequest(obj.readMethod, strings.Replace(getPath, "{id}", obj.id, -1), send)
