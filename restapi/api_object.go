@@ -400,6 +400,9 @@ func (obj *APIObject) updateObject() error {
 	if len(obj.updateData) > 0 {
 		updateData, _ := json.Marshal(obj.updateData)
 		send = string(updateData)
+		
+		// Replace "{id}" in the updateData string with the actual obj.id
+		send = strings.Replace(send, "{id}", obj.id, -1)
 		if obj.debug {
 			log.Printf("api_object.go: Using update data '%s'", send)
 		}
